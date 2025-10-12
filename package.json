@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "@feathersjs/socketio-client": "^5.0.35",
+    "dotenv": "^17.2.3",
+    "http": "^0.0.1-security",
+    "mongoose": "^8.19.1",
+    "socketio": "^1.0.0"
+  }
+}
