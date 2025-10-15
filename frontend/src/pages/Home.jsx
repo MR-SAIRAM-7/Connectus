@@ -1,6 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Video, MessageSquare, Monitor, Users, Shield, Zap, Check } from 'lucide-react';
+import {
+  ArrowRight,
+  Video,
+  MessageSquare,
+  Monitor,
+  Users,
+  Shield,
+  Zap,
+  Check
+} from 'lucide-react';
 
 const Home = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -13,12 +22,67 @@ const Home = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const features = [
+    {
+      icon: <Video className="w-8 h-8" />,
+      title: "HD Video Quality",
+      description:
+        "Crystal-clear 4K video streaming with adaptive bitrate for smooth calls even on slower connections.",
+      color: "red"
+    },
+    {
+      icon: <MessageSquare className="w-8 h-8" />,
+      title: "Real-Time Chat",
+      description:
+        "Instant messaging with emoji reactions, file sharing, and threaded conversations during calls.",
+      color: "blue"
+    },
+    {
+      icon: <Monitor className="w-8 h-8" />,
+      title: "Screen Sharing",
+      description:
+        "Share your entire screen or specific applications with one click. Perfect for presentations.",
+      color: "green"
+    },
+    {
+      icon: <Users className="w-8 h-8" />,
+      title: "Virtual Backgrounds",
+      description:
+        "AI-powered background blur and custom backgrounds to maintain privacy and professionalism.",
+      color: "purple"
+    },
+    {
+      icon: <Shield className="w-8 h-8" />,
+      title: "End-to-End Encryption",
+      description:
+        "Bank-level security ensures your conversations remain private and protected at all times.",
+      color: "yellow"
+    },
+    {
+      icon: <Zap className="w-8 h-8" />,
+      title: "Instant Join",
+      description:
+        "No downloads required. Join meetings instantly from any browser with a single click.",
+      color: "pink"
+    }
+  ];
+
+  // Map of color -> Tailwind background class (so we don't rely on dynamic class strings)
+  const colorMap = {
+    red: "bg-red-500/10",
+    blue: "bg-blue-500/10",
+    green: "bg-green-500/10",
+    purple: "bg-purple-500/10",
+    yellow: "bg-yellow-500/10",
+    pink: "bg-pink-500/10"
+  };
+
   return (
     <div className="min-h-screen bg-black text-white">
       {/* Enhanced Header with Scroll Effect */}
-      <header 
+      <header
         className={`fixed top-0 w-full z-50 transition-all duration-300 ${
-          isScrolled ? 'bg-black/95 backdrop-blur-lg shadow-lg py-4' : 'bg-transparent py-6'
+          isScrolled ? "bg-black/95 backdrop-blur-lg shadow-lg py-4" : "bg-transparent py-6"
         }`}
       >
         <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
@@ -29,23 +93,26 @@ const Home = () => {
             </h1>
           </div>
           <nav className="hidden md:flex space-x-8 items-center">
-            <a href="#features" className="hover:text-red-500 transition-colors duration-300">Features</a>
-            <a href="#benefits" className="hover:text-red-500 transition-colors duration-300">Benefits</a>
-            <a href="#pricing" className="hover:text-red-500 transition-colors duration-300">Pricing</a>
-            <Link 
-              to="/login" 
-              className="text-gray-300 hover:text-white transition-colors duration-300"
-            >
+            <a href="#features" className="hover:text-red-500 transition-colors duration-300">
+              Features
+            </a>
+            <a href="#benefits" className="hover:text-red-500 transition-colors duration-300">
+              Benefits
+            </a>
+            <a href="#pricing" className="hover:text-red-500 transition-colors duration-300">
+              Pricing
+            </a>
+            <Link to="/login" className="text-gray-300 hover:text-white transition-colors duration-300">
               Login
             </Link>
-            <Link 
-              to="/signup" 
+            <Link
+              to="/signup"
               className="bg-red-500 hover:bg-red-600 transition-all duration-300 px-6 py-2.5 rounded-full font-semibold shadow-lg hover:shadow-red-500/50 hover:scale-105"
             >
               Get Started Free
             </Link>
           </nav>
-          
+
           {/* Mobile Menu Button */}
           <button className="md:hidden text-white">
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -59,12 +126,15 @@ const Home = () => {
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
         {/* Animated Background Gradient */}
         <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-black to-red-950/20">
-          <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?w=1920&q=80')] opacity-5 bg-cover bg-center"></div>
+          <div
+            className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?w=1920&q=80')] opacity-5 bg-cover bg-center"
+            aria-hidden="true"
+          />
         </div>
-        
+
         {/* Floating Elements */}
-        <div className="absolute top-20 left-10 w-72 h-72 bg-red-500/10 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
+        <div className="absolute top-20 left-10 w-72 h-72 bg-red-500/10 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse delay-1000" />
 
         <div className="relative z-10 max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
           <div className="space-y-8">
@@ -73,30 +143,41 @@ const Home = () => {
                 New: AI-Powered Background Blur
               </span>
             </div>
-            
+
             <h2 className="text-5xl md:text-7xl font-extrabold leading-tight">
               Video Meetings
               <span className="block bg-gradient-to-r from-red-500 to-pink-500 bg-clip-text text-transparent">
                 Reimagined
               </span>
             </h2>
-            
+
             <p className="text-xl text-gray-400 leading-relaxed max-w-xl">
-              Connect with anyone, anywhere. Experience crystal-clear HD video, real-time collaboration, 
+              Connect with anyone, anywhere. Experience crystal-clear HD video, real-time collaboration,
               and seamless screen sharing—all in one powerful platform.
             </p>
 
+            {/* Buttons Section with Join as Guest */}
             <div className="flex flex-col sm:flex-row gap-4">
-              <Link 
-                to="/signup" 
+              <Link
+                to="/signup"
                 className="group bg-red-500 hover:bg-red-600 transition-all duration-300 text-white px-8 py-4 rounded-full font-semibold shadow-xl hover:shadow-red-500/50 flex items-center justify-center space-x-2 hover:scale-105"
               >
                 <span>Start Free Trial</span>
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Link>
+
               <button className="bg-white/5 backdrop-blur-sm border border-white/10 hover:bg-white/10 transition-all duration-300 text-white px-8 py-4 rounded-full font-semibold hover:scale-105">
                 Watch Demo
               </button>
+
+              {/* ✅ Join as Guest Button */}
+              <Link
+                to="/video"
+                className="group bg-gray-800 hover:bg-gray-700 transition-all duration-300 text-white px-8 py-4 rounded-full font-semibold shadow-lg flex items-center justify-center space-x-2 hover:scale-105 border border-gray-700"
+              >
+                <span>Join as Guest</span>
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </Link>
             </div>
 
             <div className="flex items-center space-x-8 pt-4">
@@ -122,14 +203,14 @@ const Home = () => {
           {/* Hero Image */}
           <div className="relative hidden md:block">
             <div className="relative rounded-2xl overflow-hidden shadow-2xl shadow-red-500/20 hover:shadow-red-500/40 transition-all duration-500 hover:scale-105">
-              <img 
-                src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=800&q=80" 
+              <img
+                src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=800&q=80"
                 alt="Team collaboration"
                 className="w-full h-auto"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
             </div>
-            
+
             {/* Floating Stats Card */}
             <div className="absolute -bottom-6 -left-6 bg-white/10 backdrop-blur-lg border border-white/20 rounded-xl p-4 shadow-xl">
               <div className="flex items-center space-x-3">
@@ -149,10 +230,14 @@ const Home = () => {
       {/* Social Proof / Logos Section */}
       <section className="py-16 border-y border-gray-800">
         <div className="max-w-7xl mx-auto px-6">
-          <p className="text-center text-gray-500 mb-8 uppercase tracking-wider text-sm">Trusted by leading teams worldwide</p>
+          <p className="text-center text-gray-500 mb-8 uppercase tracking-wider text-sm">
+            Trusted by leading teams worldwide
+          </p>
           <div className="grid grid-cols-2 md:grid-cols-5 gap-8 items-center opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-500">
             {['Company 1', 'Company 2', 'Company 3', 'Company 4', 'Company 5'].map((company, i) => (
-              <div key={i} className="text-center text-xl font-bold text-gray-600">{company}</div>
+              <div key={i} className="text-center text-xl font-bold text-gray-600">
+                {company}
+              </div>
             ))}
           </div>
         </div>
@@ -170,59 +255,18 @@ const Home = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              {
-                icon: <Video className="w-8 h-8" />,
-                title: "HD Video Quality",
-                description: "Crystal-clear 4K video streaming with adaptive bitrate for smooth calls even on slower connections.",
-                color: "red"
-              },
-              {
-                icon: <MessageSquare className="w-8 h-8" />,
-                title: "Real-Time Chat",
-                description: "Instant messaging with emoji reactions, file sharing, and threaded conversations during calls.",
-                color: "blue"
-              },
-              {
-                icon: <Monitor className="w-8 h-8" />,
-                title: "Screen Sharing",
-                description: "Share your entire screen or specific applications with one click. Perfect for presentations.",
-                color: "green"
-              },
-              {
-                icon: <Users className="w-8 h-8" />,
-                title: "Virtual Backgrounds",
-                description: "AI-powered background blur and custom backgrounds to maintain privacy and professionalism.",
-                color: "purple"
-              },
-              {
-                icon: <Shield className="w-8 h-8" />,
-                title: "End-to-End Encryption",
-                description: "Bank-level security ensures your conversations remain private and protected at all times.",
-                color: "yellow"
-              },
-              {
-                icon: <Zap className="w-8 h-8" />,
-                title: "Instant Join",
-                description: "No downloads required. Join meetings instantly from any browser with a single click.",
-                color: "pink"
-              }
-            ].map((feature, index) => (
-              <div 
+            {features.map((feature, index) => (
+              <div
                 key={index}
                 className="group relative bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-sm border border-gray-700/50 p-8 rounded-2xl hover:border-red-500/50 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:shadow-red-500/20"
               >
-                <div className={`inline-block p-4 bg-${feature.color}-500/10 rounded-xl mb-6 group-hover:scale-110 transition-transform duration-300`}>
-                  <div className="text-red-500">
-                    {feature.icon}
-                  </div>
+                <div className={`${colorMap[feature.color]} inline-block p-4 rounded-xl mb-6 group-hover:scale-110 transition-transform duration-300`}>
+                  <div className="text-red-500">{feature.icon}</div>
                 </div>
                 <h4 className="text-2xl font-semibold mb-4 group-hover:text-red-500 transition-colors">
                   {feature.title}
                 </h4>
-                <p className="text-gray-400 leading-relaxed">
-                  {feature.description}
-                </p>
+                <p className="text-gray-400 leading-relaxed">{feature.description}</p>
               </div>
             ))}
           </div>
@@ -234,13 +278,13 @@ const Home = () => {
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid md:grid-cols-2 gap-16 items-center">
             <div className="order-2 md:order-1">
-              <img 
-                src="https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?w=800&q=80" 
+              <img
+                src="https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?w=800&q=80"
                 alt="Professional video call"
                 className="rounded-2xl shadow-2xl hover:shadow-red-500/20 transition-all duration-500"
               />
             </div>
-            
+
             <div className="space-y-8 order-1 md:order-2">
               <div>
                 <span className="text-red-500 font-semibold text-sm uppercase tracking-wider">Why Choose Us</span>
@@ -262,7 +306,7 @@ const Home = () => {
                 </div>
               ))}
 
-              <Link 
+              <Link
                 to="/signup"
                 className="inline-flex items-center space-x-2 bg-red-500 hover:bg-red-600 transition-all duration-300 text-white px-8 py-4 rounded-full font-semibold shadow-xl hover:shadow-red-500/50 mt-8 hover:scale-105"
               >
@@ -279,11 +323,11 @@ const Home = () => {
         <div className="max-w-4xl mx-auto px-6 text-center">
           <h3 className="text-4xl font-bold mb-6">Simple, Transparent Pricing</h3>
           <p className="text-gray-400 text-lg mb-12">Start free, upgrade when you're ready</p>
-          
+
           <div className="bg-gradient-to-br from-red-500/10 to-purple-500/10 border border-red-500/20 rounded-2xl p-12">
             <h4 className="text-3xl font-bold mb-4">Free Forever Plan</h4>
             <p className="text-gray-400 mb-8">Unlimited 1-on-1 meetings • 40-minute group calls • Screen sharing • Chat</p>
-            <Link 
+            <Link
               to="/signup"
               className="inline-block bg-white text-black hover:bg-gray-100 transition-all duration-300 px-10 py-4 rounded-full font-bold shadow-xl hover:scale-105"
             >
@@ -300,41 +344,87 @@ const Home = () => {
             <div>
               <h5 className="font-semibold mb-4 text-white">Product</h5>
               <ul className="space-y-2 text-gray-400">
-                <li><a href="#" className="hover:text-red-500 transition-colors">Features</a></li>
-                <li><a href="#" className="hover:text-red-500 transition-colors">Pricing</a></li>
-                <li><a href="#" className="hover:text-red-500 transition-colors">Security</a></li>
+                <li>
+                  <a href="#features" className="hover:text-red-500 transition-colors">
+                    Features
+                  </a>
+                </li>
+                <li>
+                  <a href="#pricing" className="hover:text-red-500 transition-colors">
+                    Pricing
+                  </a>
+                </li>
+                <li>
+                  <a href="#benefits" className="hover:text-red-500 transition-colors">
+                    Security
+                  </a>
+                </li>
               </ul>
             </div>
             <div>
               <h5 className="font-semibold mb-4 text-white">Company</h5>
               <ul className="space-y-2 text-gray-400">
-                <li><a href="#" className="hover:text-red-500 transition-colors">About</a></li>
-                <li><a href="#" className="hover:text-red-500 transition-colors">Blog</a></li>
-                <li><a href="#" className="hover:text-red-500 transition-colors">Careers</a></li>
+                <li>
+                  <a href="#" className="hover:text-red-500 transition-colors">
+                    About
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-red-500 transition-colors">
+                    Blog
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-red-500 transition-colors">
+                    Careers
+                  </a>
+                </li>
               </ul>
             </div>
             <div>
               <h5 className="font-semibold mb-4 text-white">Resources</h5>
               <ul className="space-y-2 text-gray-400">
-                <li><a href="#" className="hover:text-red-500 transition-colors">Help Center</a></li>
-                <li><a href="#" className="hover:text-red-500 transition-colors">API Docs</a></li>
-                <li><a href="#" className="hover:text-red-500 transition-colors">Community</a></li>
+                <li>
+                  <a href="#" className="hover:text-red-500 transition-colors">
+                    Help Center
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-red-500 transition-colors">
+                    API Docs
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-red-500 transition-colors">
+                    Community
+                  </a>
+                </li>
               </ul>
             </div>
             <div>
               <h5 className="font-semibold mb-4 text-white">Legal</h5>
               <ul className="space-y-2 text-gray-400">
-                <li><a href="#" className="hover:text-red-500 transition-colors">Privacy</a></li>
-                <li><a href="#" className="hover:text-red-500 transition-colors">Terms</a></li>
-                <li><a href="#" className="hover:text-red-500 transition-colors">Cookies</a></li>
+                <li>
+                  <a href="#" className="hover:text-red-500 transition-colors">
+                    Privacy
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-red-500 transition-colors">
+                    Terms
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-red-500 transition-colors">
+                    Cookies
+                  </a>
+                </li>
               </ul>
             </div>
           </div>
-          
+
           <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center">
-            <p className="text-gray-500 text-sm">
-              &copy; {new Date().getFullYear()} ConnectUs. All rights reserved.
-            </p>
+            <p className="text-gray-500 text-sm">&copy; {new Date().getFullYear()} ConnectUs. All rights reserved.</p>
             <div className="flex space-x-6 mt-4 md:mt-0">
               {['Twitter', 'LinkedIn', 'Facebook', 'Instagram'].map((social) => (
                 <a key={social} href="#" className="text-gray-500 hover:text-red-500 transition-colors">

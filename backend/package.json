@@ -4,17 +4,22 @@
   "description": "",
   "license": "ISC",
   "author": "sairam",
-  "type": "commonjs",
+  "type": "module",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node server.js",
+    "dev": "nodemon server.js"
   },
+
   "dependencies": {
     "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
     "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.19.1",
     "path": "^0.12.7",
-    "socket": "^1.1.25"
+    "socket": "^1.1.25",
+    "socket.io": "^4.8.1"
   }
 }
