@@ -1,42 +1,62 @@
-const User = require("../models/userModel");
-const generateToken = require("../utils/generateToken");
+import User from "../models/userModel.js";
+import generateToken from "../utils/generateToken.js";
+import bcrypt from "bcryptjs";
 
-// Register User
-const registerUser = async (req, res) => {
+// Register user
+export const registerUser = async (req, res) => {
   const { name, email, password } = req.body;
 
-  const userExists = await User.findOne({ email });
-  if (userExists) return res.status(400).json({ message: "User already exists" });
+  try {
+    const userExists = await User.findOne({ email });
+    if (userExists) {
+      return res.status(400).json({ message: "User already exists" });
+    }
 
-  const user = await User.create({ name, email, password });
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const user = await User.create({ name, email, password: hashedPassword });
 
-  if (user) {
     res.status(201).json({
-      _id: user.id,
+      _id: user._id,
       name: user.name,
       email: user.email,
-      token: generateToken(user.id),
+      token: generateToken(user._id),
     });
-  } else {
-    res.status(400).json({ message: "Invalid user data" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };
 
-// Login User
-const authUser = async (req, res) => {
+// Login user
+export const loginUser = async (req, res) => {
   const { email, password } = req.body;
-  const user = await User.findOne({ email });
 
-  if (user && (await user.matchPassword(password))) {
-    res.json({
-      _id: user.id,
-      name: user.name,
-      email: user.email,
-      token: generateToken(user.id),
-    });
-  } else {
-    res.status(401).json({ message: "Invalid credentials" });
+  try {
+    const user = await User.findOne({ email });
+    if (user && (await bcrypt.compare(password, user.password))) {
+      res.json({
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        token: generateToken(user._id),
+      });
+    } else {
+      res.status(401).json({ message: "Invalid email or password" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };
 
-module.exports = { registerUser, authUser };
+// ✅ Get user profile
+export const getUserProfile = async (req, res) => {
+  const user = await User.findById(req.user._id);
+  if (user) {
+    res.json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+    });
+  } else {
+    res.status(404).json({ message: "User not found" });
+  }
+};
