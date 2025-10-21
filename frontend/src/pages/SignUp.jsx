@@ -9,7 +9,7 @@ import {
 const SignUp = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    name: '',
+    username: '',  // Use "username" instead of "name"
     email: '',
     password: '',
     confirmPassword: ''
@@ -57,13 +57,10 @@ const SignUp = () => {
       hasNumber: /[0-9]/.test(password),
       hasSpecialChar: /[!@#$%^&*(),.?":{}|<>]/.test(password)
     };
-
     setPasswordRequirements(requirements);
-
     const score = Object.values(requirements).filter(Boolean).length;
     let feedback = '';
     let color = '';
-
     if (score <= 2) {
       feedback = 'Weak';
       color = 'bg-red-500';
@@ -74,7 +71,6 @@ const SignUp = () => {
       feedback = 'Strong';
       color = 'bg-green-500';
     }
-
     setPasswordStrength({ score, feedback, color });
   };
 
@@ -90,32 +86,27 @@ const SignUp = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-
     // Validation
     if (!agreeToTerms) {
       setError('Please accept the Terms of Service and Privacy Policy');
       return;
     }
-
     if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match');
       return;
     }
-
     if (passwordStrength.score < 3) {
       setError('Please choose a stronger password');
       return;
     }
-
     setLoading(true);
-
     try {
+      // Send "username" instead of "name" to the backend
       const response = await axios.post('http://localhost:5000/api/users/signup', {
-        name: formData.name,
+        username: formData.username,  // Correct field
         email: formData.email,
         password: formData.password,
       });
-
       localStorage.setItem('connectusToken', response.data.token);
       setSuccessMessage('Account created successfully! Redirecting...');
       
@@ -129,7 +120,6 @@ const SignUp = () => {
     }
   };
 
-  // Social signup handlers
   const handleSocialSignup = (provider) => {
     console.log(`Sign up with ${provider}`);
   };
@@ -186,7 +176,6 @@ const SignUp = () => {
               <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" className="w-5 h-5" />
               <span>Sign up with Google</span>
             </button>
-
             <div className="grid grid-cols-2 gap-3">
               <button
                 type="button"
@@ -219,9 +208,9 @@ const SignUp = () => {
 
           {/* Signup Form */}
           <form onSubmit={handleSubmit} className="space-y-5">
-            {/* Full Name Field */}
+            {/* Full Name Field (Username) */}
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-2">
+              <label htmlFor="username" className="block text-sm font-medium text-gray-300 mb-2">
                 Full Name
               </label>
               <div className="relative">
@@ -230,12 +219,12 @@ const SignUp = () => {
                 </div>
                 <input
                   type="text"
-                  id="name"
-                  name="name"
-                  value={formData.name}
+                  id="username"
+                  name="username"  // Matches formData.username
+                  value={formData.username}  // Use username state
                   onChange={handleInputChange}
                   required
-                  autoComplete="name"
+                  autoComplete="username"
                   placeholder="Enter your full name"
                   className="w-full pl-12 pr-4 py-3.5 bg-gray-900 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-300"
                   aria-label="Full name"
@@ -297,7 +286,6 @@ const SignUp = () => {
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
               </div>
-
               {/* Password Strength Indicator */}
               {formData.password && (
                 <div className="mt-3">
@@ -321,7 +309,6 @@ const SignUp = () => {
                       ></div>
                     ))}
                   </div>
-
                   {/* Password Requirements */}
                   <div className="space-y-2 p-3 bg-gray-900/50 rounded-lg border border-gray-800">
                     <p className="text-xs text-gray-400 mb-2">Password must contain:</p>
@@ -480,7 +467,6 @@ const SignUp = () => {
               <h3 className="text-2xl font-bold text-center mb-6">Join ConnectUs Today</h3>
               {[
                 { icon: <Video className="w-5 h-5" />, text: 'Unlimited video meetings' },
-                // { icon: <Users className="w-5 h-5" />, text: 'Collaborate with unlimited users' },
                 { icon: <Shield className="w-5 h-5" />, text: 'Enterprise-grade security' },
                 { icon: <Check className="w-5 h-5" />, text: 'No credit card required' }
               ].map((feature, index) => (

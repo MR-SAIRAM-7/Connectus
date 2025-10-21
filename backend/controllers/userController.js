@@ -4,7 +4,7 @@ import bcrypt from "bcryptjs";
 
 // Register user
 export const registerUser = async (req, res) => {
-  const { name, email, password } = req.body;
+  const { username, email, password } = req.body;
 
   try {
     const userExists = await User.findOne({ email });

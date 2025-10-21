@@ -29,13 +29,26 @@ io.on("connection", (socket) => {
 
   socket.on("join-room", (roomId, userId) => {
     socket.join(roomId);
-    socket.to(roomId).emit("user-connected", userId);
+
+    const users = [...io.sockets.adapter.rooms.get(roomId) || []].filter(id => id !== socket.id);
+    socket.emit("all-users", users);
+
+    socket.to(roomId).emit("user-joined", { signal: null, callerId: socket.id });
+
+    socket.on("sending-signal", payload => {
+      io.to(payload.userToSignal).emit("user-joined", { signal: payload.signal, callerId: payload.callerId });
+    });
+
+    socket.on("returning-signal", payload => {
+      io.to(payload.callerId).emit("receiving-returned-signal", { signal: payload.signal, id: socket.id });
+    });
 
     socket.on("disconnect", () => {
-      socket.to(roomId).emit("user-disconnected", userId);
+      socket.to(roomId).emit("user-disconnected", socket.id);
     });
   });
 });
+
 
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
