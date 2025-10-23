@@ -102,7 +102,7 @@ const SignUp = () => {
     setLoading(true);
     try {
       // Send "username" instead of "name" to the backend
-      const response = await axios.post('http://localhost:5000/api/users/signup', {
+      const response = await axios.post('http://localhost:5000/api/users/register', {
         username: formData.username,  // Correct field
         email: formData.email,
         password: formData.password,
@@ -111,10 +111,10 @@ const SignUp = () => {
       setSuccessMessage('Account created successfully! Redirecting...');
       
       setTimeout(() => {
-        navigate('/dashboard');
+        navigate('/login');
       }, 1500);
     } catch (err) {
-      setError(err.response?.data?.message || 'Signup failed. Please try again.');
+      setError(err.response?.data?.message || err.message || 'Signup failed. Please try again.');
     } finally {
       setLoading(false);
     }
