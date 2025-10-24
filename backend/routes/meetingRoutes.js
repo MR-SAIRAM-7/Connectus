@@ -6,4 +6,4 @@ const router = express.Router();
 router.post("/create", createMeeting);
 router.get("/", getMeetings);
 
-export default router;  // ✅ This is default export
+export default router;  

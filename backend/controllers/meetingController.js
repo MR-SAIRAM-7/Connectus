@@ -1,4 +1,3 @@
-// backend/controllers/meetingController.js
 import Meeting from "../models/meetingModel.js";
 
 // Create a meeting
