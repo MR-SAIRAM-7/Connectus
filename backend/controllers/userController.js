@@ -1,78 +1,150 @@
+// backend/controllers/userController.js
+import asyncHandler from "express-async-handler";
+import validator from "validator";
 import User from "../models/userModel.js";
 import generateToken from "../utils/generateToken.js";
 
-// @desc    Register a new user
-// @route   POST /api/users/register
-// @access  Public
-export const registerUser = async (req, res) => {
-  try {
-    const { username, email, password } = req.body;
-
-    if (!username || !email || !password) {
-      return res.status(400).json({ message: "All fields are required" });
-    }
-
-    const userExists = await User.findOne({ email });
-    if (userExists) {
-      return res.status(400).json({ message: "User already exists" });
-    }
-
-    const user = await User.create({ username, email, password });
-
-    if (user) {
-      res.status(201).json({
-        _id: user._id,
-        username: user.username,
-        email: user.email,
-        token: generateToken(user._id),
-      });
-    } else {
-      res.status(400).json({ message: "Invalid user data" });
-    }
-  } catch (error) {
-    console.error("Register Error:", error.message);
-    res.status(500).json({ message: "Server error" });
-  }
+/**
+ * Helper: standardized success response
+ * @param {object} res - express response
+ * @param {number} statusCode
+ * @param {string} message
+ * @param {object} data
+ */
+const sendSuccess = (res, statusCode, message, data = {}) => {
+  return res.status(statusCode).json({
+    success: true,
+    message,
+    data,
+  });
 };
 
-// @desc    Login user
-// @route   POST /api/users/login
-// @access  Public
-export const loginUser = async (req, res) => {
-  try {
-    const { email, password } = req.body;
+/**
+ * @desc    Register a new user
+ * @route   POST /api/users/register
+ * @access  Public
+ */
+export const registerUser = asyncHandler(async (req, res) => {
+  const { username, email, password } = req.body ?? {};
 
-    const user = await User.findOne({ email });
-
-    if (user && (await user.matchPassword(password))) {
-      res.json({
-        _id: user._id,
-        username: user.username,
-        email: user.email,
-        token: generateToken(user._id),
-      });
-    } else {
-      res.status(401).json({ message: "Invalid email or password" });
-    }
-  } catch (error) {
-    console.error("Login Error:", error.message);
-    res.status(500).json({ message: "Server error" });
+  // Basic validation
+  if (!username || !email || !password) {
+    res.status(400);
+    throw new Error("All fields (username, email, password) are required.");
   }
-};
 
-// @desc    Get user profile
-// @route   GET /api/users/profile
-// @access  Private
-
-export const getUserProfile = async (req, res) => {
-  try {
-    const user = await User.findById(req.user._id).select("-password");
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-    res.json(user);
-  } catch (error) {
-    console.error("Profile Fetch Error:", error.message);
-    res.status(500).json({ message: "Server error" });
+  if (!validator.isEmail(email)) {
+    res.status(400);
+    throw new Error("Invalid email address.");
   }
-};
+
+  if (typeof password !== "string" || password.length < 6) {
+    res.status(400);
+    throw new Error("Password must be at least 6 characters long.");
+  }
+
+  // Prevent duplicate users by email or username
+  const existingByEmail = await User.findOne({ email });
+  if (existingByEmail) {
+    res.status(400);
+    throw new Error("A user with this email already exists.");
+  }
+
+  const existingByUsername = await User.findOne({ username });
+  if (existingByUsername) {
+    res.status(400);
+    throw new Error("This username is already taken.");
+  }
+
+  // Create user - password hashing handled in model pre('save')
+  const user = await User.create({ username, email, password });
+
+  if (!user) {
+    res.status(500);
+    throw new Error("Failed to create user.");
+  }
+
+  // Return user info + token (stateless JWT)
+  const token = generateToken(user._id);
+
+  return sendSuccess(res, 201, "User registered successfully.", {
+    _id: user._id,
+    username: user.username,
+    email: user.email,
+    avatar: user.avatar,
+    token,
+  });
+});
+
+/**
+ * @desc    Authenticate user & get token
+ * @route   POST /api/users/login
+ * @access  Public
+ */
+export const loginUser = asyncHandler(async (req, res) => {
+  const { email, password } = req.body ?? {};
+
+  if (!email || !password) {
+    res.status(400);
+    throw new Error("Email and password are required.");
+  }
+
+  if (!validator.isEmail(email)) {
+    res.status(400);
+    throw new Error("Invalid email address.");
+  }
+
+  const user = await User.findOne({ email });
+
+  // matchPassword is defined on the model (bcrypt.compare)
+  if (!user || !(await user.matchPassword(password))) {
+    res.status(401);
+    throw new Error("Invalid email or password.");
+  }
+
+  const token = generateToken(user._id);
+
+  return sendSuccess(res, 200, "Login successful.", {
+    _id: user._id,
+    username: user.username,
+    email: user.email,
+    avatar: user.avatar,
+    token,
+  });
+});
+
+/**
+ * @desc    Get logged-in user's profile
+ * @route   GET /api/users/profile
+ * @access  Private
+ *
+ * Requires `protect` middleware to set req.user = { _id, ... }
+ */
+export const getUserProfile = asyncHandler(async (req, res) => {
+  const userId = req.user?._id;
+
+  if (!userId) {
+    res.status(401);
+    throw new Error("Not authorized.");
+  }
+
+  const user = await User.findById(userId).select("-password -__v");
+  if (!user) {
+    res.status(404);
+    throw new Error("User not found.");
+  }
+
+  return sendSuccess(res, 200, "User profile fetched.", { user });
+});
+
+/**
+ * Logout endpoint (if you use cookies). If stateless JWT, client just removes token.
+ * @route POST /api/users/logout
+ * @access Public (or Protected if you want)
+ */
+
+export const logoutUser = asyncHandler(async (req, res) => {
+  // If you use http-only cookie for tokens, clear it here. Otherwise, client should delete token.
+  // res.clearCookie('token', { path: '/' });
+  return sendSuccess(res, 200, "Logged out.");
+});
