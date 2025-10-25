@@ -6,6 +6,9 @@ import dotenv from "dotenv";
 import connectDB from "./config/db.js";
 import userRoutes from "./routes/userRoutes.js";
 import meetingRoutes from "./routes/meetingRoutes.js";
+import { notFound, errorHandler } from "./middlewares/errorMiddleware.js";
+
+
 
 dotenv.config();
 connectDB();
@@ -18,6 +21,10 @@ app.use(express.json());
 // Routes
 app.use("/api/users", userRoutes);
 app.use("/api/meetings", meetingRoutes);
+
+//error middlewares
+app.use(notFound);
+app.use(errorHandler);
 
 const server = http.createServer(app);
 const io = new Server(server, {

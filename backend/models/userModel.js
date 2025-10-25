@@ -1,4 +1,3 @@
-// backend/models/User.js
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 
@@ -19,11 +18,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
       minlength: 6,
-    },
-    avatar: {
-      type: String,
-      default: "https://i.ibb.co/4pDNDk1/avatar.png",
-    },
+    }
   },
   { timestamps: true }
 );
